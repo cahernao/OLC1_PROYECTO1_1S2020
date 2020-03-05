@@ -15,10 +15,11 @@ namespace _OLC1_Proyecto1_201611269
     {
         ImageList imgl;
         int contador = 0, maximo=0;
+        ANALISIS.analizador1 miAna;
         public Form1()
         {
             imgl = new ImageList();
-            
+            miAna = new ANALISIS.analizador1();
             InitializeComponent();
         }
 
@@ -43,6 +44,8 @@ namespace _OLC1_Proyecto1_201611269
         {
             //AQUI VAMOS A ACTUALIZAR LA LISTA DE IMAGENES
             //Y HACER EL ANALISIS
+
+            miAna.analizame(txt_Principal.Text);
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
@@ -165,7 +168,8 @@ namespace _OLC1_Proyecto1_201611269
         {
             //AQUI SE GENERA EL XML EN NUESTRO CASO VAMOS A HACER UNA PRUEBA
 
-            ANALISIS.analizador1 miAna = new ANALISIS.analizador1("ups");
+            
+            //miAna.analizame(txt_Principal.Text);
         }
     }
 }
