@@ -12,7 +12,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
     {
         public List<token> miListaToken = new List<token>();
         public List<token> miListaError = new List<token>();
-
+        private token miToken;
 
 
         /*public analizador1(string aa)
@@ -37,11 +37,15 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
 
         public void analizame(string contenido)
         {
-            int fila = 0, columna = 0, EstadoPrincipal=0, EstadoComentarios=0, EstadoTemporalPrincial=0;
+            //OJO CUIDADO
+            limpia();
+            //OJO CUIDADO
+            int fila = 0, columna = 0, EstadoPrincipal=0, EstadoComentarios=0, EstadoTemporalPrincial=0, estadoConjuntos=0;
             char actual, siguiente, anterior;
+            string cadenaTemporal1 = string.Empty, nombreCONJ="", contCONJ="";
             for (int i = 0; i < contenido.Length; i++)
             {
-                Console.WriteLine("Princiapl: " + EstadoPrincipal + " Tempo: " + EstadoTemporalPrincial+ "  Y el char es: "+contenido[i]);
+                Console.WriteLine("Princiapl: " + EstadoPrincipal + " Tempo: " + EstadoTemporalPrincial+" CONJ: "+estadoConjuntos+ "  Y el char es: "+contenido[i]);
                 if (contenido[i] == '\n') 
                 { 
                     fila++; 
@@ -92,42 +96,178 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                             //AQUI ESPERAMOS 2 COSAS
                             //LA DECLARACION DE CONJUNTOS Y/O COMENTARIOS
                             //DEBEMOS HACER LA MANERA DE INTENTAR RECUPERARNOS DE ESOS ERRORES
-                            
-                            
-                            
-                            
-                            if (estadoComentario(actual, siguiente)==4)
+
+
+
+
+                            if (estadoComentario(actual, siguiente) == 4 || estadoComentario(anterior, actual) == 4)
                             {
                                 //EN ESTA CONDICION VERIFICAREMOS EL ESTADO DE SI ENTRAMOS A COMENTARIOS
                                 //DE SER ASI CAMBIAREMOS EL ESTADO PRINCIPAL AL NORMAL
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 4;
                             }
-                            else if (estadoComentario(actual, siguiente) == 5)
+                            else if (estadoComentario(actual, siguiente) == 5 || estadoComentario(anterior, actual) == 5)
                             {
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 5;
                             }
                             else
                             {
+                                cadenaTemporal1 += actual;
                                 //AQUI DEBEMOS BUSCAR CONJUNTOS
-                                if(actual=='#')EstadoPrincipal=1;
+                                switch (estadoConjuntos)
+                                {
+                                        //CADENATEMPORAL1 debe ser igual al caracter
 
-                            }
+                                    case 0:
+                                        //CASO UNO DONDE ESPERAMOS 2 ESTADOS DE SALIDA
+                                        //1 DONDE ESTEN LOS 2 PUNTOS Y LUEGO VAMOS A CREAR UN TOKEN RESERVADA Y SEGUIMOS EN ESTADO CONJUNTOS
+                                        //2 DONDE RECONOCEMOS OTRO TOKEN DONDE ES -> Y QUIERE DECIR QUE VAMOS AL ESTADO PATRON
+                                        if (actual == ':')
+                                        {
+                                            if (cadenaTemporal1.Contains("CONJ"))
+                                            {
+                                                estadoConjuntos++;
+                                                //TOOOKEN
+                                                miListaToken.Add(new token("RESERVADA", "CONJ", fila, columna-4));
+                                                miToken = new token("PUNTOS", ":", fila, columna);
+                                                miListaToken.Add(miToken);
+                                                cadenaTemporal1 = string.Empty;
+                                                
+                                            }
+                                            else estadoConjuntos = -1;
+                                        }
+                                        else if (actual == '-' && siguiente == '>')
+                                        {
+                                            //TOOOKEN
+                                            EstadoPrincipal++;
+                                            miListaToken.Add(new token("ID_PATRON", cadenaTemporal1.Replace(" ", ""), fila, columna - 1));
+                                            cadenaTemporal1 = string.Empty;
+                                        }
+                                        
+                                        break;
 
-                            break;
+
+                                    case 1:
+                                        //SI ESTAMOS AQUI QUIERE DECIR QUE VAMOS A RECONOCER EL ID DE CONJ
+                                        if (anterior == '-' && actual == '>')
+                                        {
+                                            estadoConjuntos++;
+                                            //TOOOKEN
+                                            miToken = new token("ID_CONJ", nombreCONJ.Replace("-", ""), fila, columna);
+                                            miListaToken.Add(miToken);
+                                            nombreCONJ = "";
+
+                                        }
+                                        else nombreCONJ += actual;
+                                        break;
+
+                                    case 2:
+                                        //AQUI VAMOS A RECONCER EL CONTENIDO DEL CONJ
+                                        if (actual == ';')
+                                        {
+                                            //TOOOKEN
+                                            miToken = new token("CONTENIDO_CONJ",contCONJ.Replace(" ", ""), fila, columna);
+                                            miListaToken.Add(miToken);
+                                            contCONJ = "";
+                                            estadoConjuntos = 0;
+
+                                            //AQUI ESTAMOS EN EL ESTADO FINAL BUSCANDO 
+                                        }
+                                        else { contCONJ += actual; }
+                                        break;
+                                        /*
+                                    case 1:
+                                        if (actual == 'O') estadoConjuntos++;
+                                        else estadoConjuntos=-1;
+                                        break;
+
+                                    case 2:
+                                        if (actual == 'N') estadoConjuntos++;
+                                        else estadoConjuntos = -1;
+                                        break;
+
+                                    case 3:
+                                        if (actual == 'N') estadoConjuntos++;
+                                        else estadoConjuntos = -1;
+                                        break;
+                                    case 4:
+                                        if (actual == 'J') {
+                                            estadoConjuntos++;
+                                            //TOOOKEN
+                                            miToken = new token("RESERVADA", "CONJ", fila, columna);
+                                            miListaToken.Add(miToken);
+                                        }
+                                        else estadoConjuntos = -1;
+                                        break;
+                                    case 5:
+                                        if (actual == ':') {
+                                            estadoConjuntos++;
+                                            //TOOOKEN
+                                            miToken = new token("PUNTOS", ":", fila, columna);
+                                            miListaToken.Add(miToken);
+
+                                        }
+                                        break;
+
+                                    case 6:
+                                        if (anterior == '-' && actual == '>') { estadoConjuntos++;
+                                            //TOOOKEN
+                                            miToken = new token("NOMBRECONJ", nombreCONJ.Replace("-", ""), fila, columna);
+                                            miListaToken.Add(miToken);
+                                            nombreCONJ = "";
+                                        
+                                        }
+                                        else nombreCONJ +=actual;
+                                        break;
+
+                                    case 7:
+                                        if (actual == ';')
+                                        {
+                                            //TOOOKEN
+                                            miToken = new token("CONTENIDOCONJ", contCONJ.Replace(" ", ""), fila, columna);
+                                            miListaToken.Add(miToken);
+                                            contCONJ = "";
+                                            estadoConjuntos = 0;
+
+                                            //AQUI ESTAMOS EN EL ESTADO FINAL BUSCANDO 
+                                        }
+                                        else { contCONJ += actual; }
+                                        break;
+                                    
+                                        */
+                                    default:
+                                        //AQUI DEBEMOS ENCONTRAR ALGUN ERROR;
+                                        //DIGAMOS QUE OBTENEMOS UN -1
+                                        //HAREMOS QUE ENTREMOS A ESTE ESTADO Y LA VARIABLE CADENATEMPORAL1 SERA ALMACENADA COMO UN ERROR
+                                        //Y VOLVEREMOS A EL SIGUIENTE ESTADO, TAMBI[EN GUARDAREMOS EL TOKEN COMO ERROR
+                                        EstadoPrincipal++;
+                                        token miError = new token("Error", cadenaTemporal1, fila, columna);
+                                        miListaError.Add(miError);
+                                        cadenaTemporal1 = string.Empty;
+                                        break;
+
+                                }//switch conjuntos
+
+                            }//else case 0
+
+                            break;//BREAK CASE0 CONJUNTO
 
                         
+
+
+
                         //CASO PATRONES
                         case 1:
-                            if (estadoComentario(actual, siguiente) == 4)
+                            if (estadoComentario(actual, siguiente) == 4 || estadoComentario(anterior, actual) == 4)
                             {
                                 //EN ESTA CONDICION VERIFICAREMOS EL ESTADO DE SI ENTRAMOS A COMENTARIOS
                                 //DE SER ASI CAMBIAREMOS EL ESTADO PRINCIPAL AL NORMAL
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 4;
                             }
-                            else if (estadoComentario(actual, siguiente) == 5)
+                            else if (estadoComentario(actual, siguiente) == 5 || estadoComentario(anterior, actual) == 5)
                             {
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 5;
@@ -135,7 +275,10 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                             else
                             {
                                 //AQUI DEBEMOS BUSCAR PATRONES
-                                if (actual == '(') EstadoPrincipal = 2;
+                                //if (actual == '(') EstadoPrincipal = 2;
+                                //DEBEMOS CONSIDERAR EL TOKEN ANTERIOR
+                                //PUESTO QUE EL ACTUAL DEL CASO ANTERIOR, ES UN ERROR, PARA ESE, PERO NO PARA ESTE CASO
+                                //EN FIN USAR EL CHAR ANTERIOR
 
                             }
                             break;
@@ -147,14 +290,14 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
 
                         //LEXEMAS
                         case 2:
-                            if (estadoComentario(actual, siguiente) == 4)
+                            if (estadoComentario(actual, siguiente) == 4 || estadoComentario(anterior, actual) == 4)
                             {
                                 //EN ESTA CONDICION VERIFICAREMOS EL ESTADO DE SI ENTRAMOS A COMENTARIOS
                                 //DE SER ASI CAMBIAREMOS EL ESTADO PRINCIPAL AL NORMAL
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 4;
                             }
-                            else if (estadoComentario(actual, siguiente) == 5)
+                            else if (estadoComentario(actual, siguiente) == 5 || estadoComentario(anterior, actual) == 5)
                             {
                                 EstadoTemporalPrincial = EstadoPrincipal;
                                 EstadoPrincipal = 5;
@@ -202,8 +345,21 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
 
                 
             }
+            MessageBox.Show("analizadoo");
         }
 
+
+        private string dameCorrecto(string cadena)
+        {
+            string cad = cadena;
+            
+            if (cadena.Contains("&")) cad = cadena.Replace("&", "&amp;");
+            if (cadena.Contains(">")) cad = cadena.Replace(">", "&gt;");
+            if (cadena.Contains("\"")) cad = cadena.Replace("\"", "&quot;");
+            if (cadena.Contains("'")) cad = cadena.Replace("'", "&apos;");
+            if (cadena.Contains("<")) cad = cadena.Replace("<", "&lt;");
+            return cad;
+        }
 
 
 
@@ -230,6 +386,13 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
         {
             if ((actual == '/' && siguiente == '/') || (actual == '<' && siguiente == '!')) return true;
             else return false;
+        }
+
+
+        private void limpia()
+        {
+            miListaToken.Clear();
+            miListaError.Clear();
         }
 
 
@@ -266,7 +429,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                     //contenido += "<ListaTokens>\n";
                     foreach (token to in miListaToken)
                     {
-                        sw.WriteLine("<Token>\n<Nombre>" + to.dameNombre() + "</Nombre>\n<Valor>" + to.dameContenido() + "</Valor>\n<Fila>" + to.fila + "</Fila>\n<Columna>" + to.columna + "</Columna>\n</Token>");
+                        sw.WriteLine("<Token>\n<Nombre>" + to.dameNombre() + "</Nombre>\n<Valor>" + dameCorrecto(to.dameContenido()) + "</Valor>\n<Fila>" + to.fila + "</Fila>\n<Columna>" + to.columna + "</Columna>\n</Token>");
                     }
                     
 
@@ -275,7 +438,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                     //AQUI VA EL CICLO DE ERRORES
                     foreach (token to in miListaError)
                     {
-                        sw.WriteLine("<Token>\n<Nombre>" + to.dameNombre() + "</Nombre>\n<Valor>" + to.dameContenido() + "</Valor>\n<Fila>" + to.fila + "</Fila>\n<Columna>" + to.columna + "</Columna>\n</Token>");
+                        sw.WriteLine("<Token>\n<Nombre>" + to.dameNombre() + "</Nombre>\n<Valor>" + dameCorrecto(to.dameContenido()) + "</Valor>\n<Fila>" + to.fila + "</Fila>\n<Columna>" + to.columna + "</Columna>\n</Token>");
                     }
 
                     sw.WriteLine("</TokenError>\n");

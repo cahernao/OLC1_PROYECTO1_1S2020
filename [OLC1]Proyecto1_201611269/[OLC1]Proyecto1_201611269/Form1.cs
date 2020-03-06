@@ -170,6 +170,7 @@ namespace _OLC1_Proyecto1_201611269
 
             
             //miAna.analizame(txt_Principal.Text);
+            miAna.GeneraReporteTokens();
         }
     }
 }
