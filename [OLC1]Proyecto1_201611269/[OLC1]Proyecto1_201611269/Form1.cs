@@ -46,6 +46,8 @@ namespace _OLC1_Proyecto1_201611269
             //Y HACER EL ANALISIS
 
             miAna.analizame(txt_Principal.Text);
+            txt_Consola.Clear();
+            txt_Consola.Text = miAna.dameTokens();
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
@@ -171,6 +173,11 @@ namespace _OLC1_Proyecto1_201611269
             
             //miAna.analizame(txt_Principal.Text);
             miAna.GeneraReporteTokens();
+        }
+
+        private void analisisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -40,12 +40,12 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
             //OJO CUIDADO
             limpia();
             //OJO CUIDADO
-            int fila = 0, columna = 0, EstadoPrincipal=0, EstadoComentarios=0, EstadoTemporalPrincial=0, estadoConjuntos=0;
+            int fila = 0, columna = 0, EstadoPrincipal=0, EstadoComentarios=0, EstadoTemporalPrincial=0, estadoConjuntos=0, estadoPatron=0, estadoLex=0;
             char actual, siguiente, anterior;
             string cadenaTemporal1 = string.Empty, nombreCONJ="", contCONJ="";
             for (int i = 0; i < contenido.Length; i++)
             {
-                Console.WriteLine("Princiapl: " + EstadoPrincipal + " Tempo: " + EstadoTemporalPrincial+" CONJ: "+estadoConjuntos+ "  Y el char es: "+contenido[i]);
+                //Console.WriteLine("Princiapl: " + EstadoPrincipal + " Tempo: " + EstadoTemporalPrincial+" CONJ: "+estadoConjuntos+ "  Y el char es: "+contenido[i]);
                 if (contenido[i] == '\n') 
                 { 
                     fila++; 
@@ -133,7 +133,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                                                 miListaToken.Add(new token("RESERVADA", "CONJ", fila, columna-4));
                                                 miToken = new token("PUNTOS", ":", fila, columna);
                                                 miListaToken.Add(miToken);
-                                                cadenaTemporal1 = string.Empty;
+                                                cadenaTemporal1 = "";
                                                 
                                             }
                                             else estadoConjuntos = -1;
@@ -142,8 +142,10 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                                         {
                                             //TOOOKEN
                                             EstadoPrincipal++;
-                                            miListaToken.Add(new token("ID_PATRON", cadenaTemporal1.Replace(" ", ""), fila, columna - 1));
+                                            miListaToken.Add(new token("ID_PATRON", quitaTodo(cadenaTemporal1), fila, columna - 1));
                                             cadenaTemporal1 = string.Empty;
+                                            //ESTADO ESPECIAL PARA IR AL NUEVO ESTADO
+                                            estadoConjuntos = 10;
                                         }
                                         
                                         break;
@@ -172,71 +174,12 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                                             miListaToken.Add(miToken);
                                             contCONJ = "";
                                             estadoConjuntos = 0;
+                                            cadenaTemporal1 = "";
 
                                             //AQUI ESTAMOS EN EL ESTADO FINAL BUSCANDO 
                                         }
                                         else { contCONJ += actual; }
                                         break;
-                                        /*
-                                    case 1:
-                                        if (actual == 'O') estadoConjuntos++;
-                                        else estadoConjuntos=-1;
-                                        break;
-
-                                    case 2:
-                                        if (actual == 'N') estadoConjuntos++;
-                                        else estadoConjuntos = -1;
-                                        break;
-
-                                    case 3:
-                                        if (actual == 'N') estadoConjuntos++;
-                                        else estadoConjuntos = -1;
-                                        break;
-                                    case 4:
-                                        if (actual == 'J') {
-                                            estadoConjuntos++;
-                                            //TOOOKEN
-                                            miToken = new token("RESERVADA", "CONJ", fila, columna);
-                                            miListaToken.Add(miToken);
-                                        }
-                                        else estadoConjuntos = -1;
-                                        break;
-                                    case 5:
-                                        if (actual == ':') {
-                                            estadoConjuntos++;
-                                            //TOOOKEN
-                                            miToken = new token("PUNTOS", ":", fila, columna);
-                                            miListaToken.Add(miToken);
-
-                                        }
-                                        break;
-
-                                    case 6:
-                                        if (anterior == '-' && actual == '>') { estadoConjuntos++;
-                                            //TOOOKEN
-                                            miToken = new token("NOMBRECONJ", nombreCONJ.Replace("-", ""), fila, columna);
-                                            miListaToken.Add(miToken);
-                                            nombreCONJ = "";
-                                        
-                                        }
-                                        else nombreCONJ +=actual;
-                                        break;
-
-                                    case 7:
-                                        if (actual == ';')
-                                        {
-                                            //TOOOKEN
-                                            miToken = new token("CONTENIDOCONJ", contCONJ.Replace(" ", ""), fila, columna);
-                                            miListaToken.Add(miToken);
-                                            contCONJ = "";
-                                            estadoConjuntos = 0;
-
-                                            //AQUI ESTAMOS EN EL ESTADO FINAL BUSCANDO 
-                                        }
-                                        else { contCONJ += actual; }
-                                        break;
-                                    
-                                        */
                                     default:
                                         //AQUI DEBEMOS ENCONTRAR ALGUN ERROR;
                                         //DIGAMOS QUE OBTENEMOS UN -1
@@ -246,6 +189,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                                         token miError = new token("Error", cadenaTemporal1, fila, columna);
                                         miListaError.Add(miError);
                                         cadenaTemporal1 = string.Empty;
+                                        estadoConjuntos=0;
                                         break;
 
                                 }//switch conjuntos
@@ -274,6 +218,54 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                             }
                             else
                             {
+                                cadenaTemporal1+=actual;
+
+                                switch(estadoPatron){
+                                    case 0:
+                                        //DEBERIAMOS ENTRAR A ESTE ESTADO PRINCIPALEMNTE
+                                        //YA QUE LO LLAMAMOS CUANDO VENIMOS DE CONJUNTOS
+                                        // Y LA PALABRA RESERVADA NO ES LA CORRECTA Y LOS TOQUENS SON IGUALES
+                                        if (anterior == '-' && actual == '>' && estadoConjuntos == 10)
+                                        {
+                                            cadenaTemporal1 = "";
+                                            estadoPatron++;
+                                            //VOLVEMOS ESTADO CONJUNTOS A SU ESTADO NORMAL
+                                            estadoConjuntos = 0;
+                                        }
+                                        else if(anterior=='-' && actual=='>' ){
+                                            //TOOOKEN
+                                            miListaToken.Add(new token("ID_PATRON",quitaTodo(cadenaTemporal1), fila, columna));
+                                            cadenaTemporal1="";
+                                            estadoPatron++;
+                                        }else if(actual==':'){
+                                            //TOOOKEN
+                                            miListaToken.Add(new token("ID_LEXEMA",quitaTodo(cadenaTemporal1), fila, columna));
+                                            cadenaTemporal1="";
+                                            EstadoPrincipal++;
+                                            estadoPatron=10;
+                                            //ESTADO ESPECIAL
+                                            
+                                        }
+                                        break;
+
+                                    case 1:
+                                        //SI LLEGAMOS A ESTE CASO QUIERE DECIR QUE DEBEMOS ALMACENAR TODO EL CONTENIDO EN ESTA INFORMACION Y LUEGO ESPERAR 
+                                        //UN PUNTO Y COMA
+                                        if(actual==';'){
+                                            //TOOOKEN
+                                            miListaToken.Add(new token("CONTENIDO_PATRON",quitaTodo(cadenaTemporal1), fila, columna));
+                                            cadenaTemporal1="";
+                                            estadoPatron=0;
+                                        }
+                                        break;
+                                    default:
+                                        //TOOOKEN
+                                            miListaToken.Add(new token("ERROR_PATRON",cadenaTemporal1, fila, columna));
+                                            cadenaTemporal1="";
+                                            EstadoPrincipal++;
+
+                                        break;
+                                }//switch patrones
                                 //AQUI DEBEMOS BUSCAR PATRONES
                                 //if (actual == '(') EstadoPrincipal = 2;
                                 //DEBEMOS CONSIDERAR EL TOKEN ANTERIOR
@@ -305,6 +297,37 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                             else
                             {
                                 //AQUI DEBEMOS BUSCAR LEXEMAS
+                                cadenaTemporal1+=actual;
+                                switch(estadoLex){
+                                    case 0:
+                                        if( (actual=='"' || actual==':') && estadoPatron==10){
+                                            estadoPatron=0;
+                                            cadenaTemporal1="";
+                                            estadoLex++;
+                                        }
+                                        else if(actual=='"' || actual==':'){
+                                            //TOOOKEN
+                                            miListaToken.Add(new token("ID_LEXEMA",quitaTodo(cadenaTemporal1), fila, columna));
+                                            cadenaTemporal1="";
+                                            estadoLex++;
+                                        }
+                                        break;
+
+
+                                    case 1:
+                                        if(actual==';'){
+                                            //TOOOKEN
+                                            miListaToken.Add(new token("CONT_LEXEMA",quitatodoDos(cadenaTemporal1), fila, columna));
+                                            cadenaTemporal1="";
+                                            estadoLex=0;
+                                        }
+                                        break;
+
+                                    default:
+                                        break;
+                                }//switch lexema
+
+
 
                             }
 
@@ -344,7 +367,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
 
 
                 
-            }
+            }//for contenido
             MessageBox.Show("analizadoo");
         }
 
@@ -396,11 +419,43 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
         }
 
 
+        private string quitaTodo(string cadena)
+        {
+            string cad = cadena;
+            /*if(cadena.Contains(" "))cad = cadena.Replace(" ", "");
+            if(cadena.Contains(">"))cad = cadena.Replace(">", "");
+            if (cadena.Contains("-")) cad = cadena.Replace("-", "");
+            if (cadena.Contains(":")) cad = cadena.Replace(":", "");
+            if (cadena.Contains("\"")) cad = cadena.Replace("\"", "");*/
+            return cad.Replace(" ", "").Replace(">", "").Replace("-", "").Replace(":", "")
+                .Replace("\"", "");
+        }
+
+        private string quitatodoDos(string cadena)
+        {
+            string cad = cadena;
+            return cad.Replace(">", "").Replace("-", "").Replace(":", "")
+                .Replace("\"", "");
+        }
 
 
 
 
 
+        public string dameTokens()
+        {
+            string contenido=string.Empty;
+            foreach (token mi in miListaToken)
+            {
+                contenido += mi.dameNombre() + "       " + mi.dameContenido() + "      " + mi.fila + "  " + mi.columna + System.Environment.NewLine;
+            }
+            contenido += "\n\n\n";
+            foreach (token mi in miListaError)
+            {
+                contenido += mi.dameNombre() + "       " + mi.dameContenido() + "      " + mi.fila + "  " + mi.columna + System.Environment.NewLine;
+            }
+            return contenido;
+        }
         
         
         

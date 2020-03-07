@@ -1,5 +1,5 @@
 <ListaTokens>
-<Generado>Carlos Hernandez 201611269 06/03/2020 11:02:01 a. m. </Generado>
+<Generado>Carlos Hernandez 201611269 06/03/2020 04:29:27 p. m. </Generado>
 <Token>
 <Nombre>RESERVADA</Nombre>
 <Valor>CONJ</Valor>
@@ -230,39 +230,63 @@
 </Token>
 <Token>
 <Nombre>ID_CONJ</Nombre>
-<Valor> operadores +,,*,\,^,%;CONJ: abecedario </Valor>
+<Valor> operadores</Valor>
+<Fila>26</Fila>
+<Columna>1015</Columna>
+</Token>
+<Token>
+<Nombre>CONTENIDO_CONJ</Nombre>
+<Valor>+,-,*,\,^,%</Valor>
+<Fila>26</Fila>
+<Columna>1028</Columna>
+</Token>
+<Token>
+<Nombre>RESERVADA</Nombre>
+<Valor>CONJ</Valor>
 <Fila>27</Fila>
-<Columna>1047</Columna>
+<Columna>1031</Columna>
+</Token>
+<Token>
+<Nombre>PUNTOS</Nombre>
+<Valor>:</Valor>
+<Fila>27</Fila>
+<Columna>1035</Columna>
+</Token>
+<Token>
+<Nombre>ID_CONJ</Nombre>
+<Valor> abecedario </Valor>
+<Fila>27</Fila>
+<Columna>1049</Columna>
 </Token>
 <Token>
 <Nombre>CONTENIDO_CONJ</Nombre>
 <Valor>a~z</Valor>
 <Fila>27</Fila>
-<Columna>1052</Columna>
+<Columna>1054</Columna>
 </Token>
 <Token>
 <Nombre>RESERVADA</Nombre>
 <Valor>CONJ</Valor>
 <Fila>28</Fila>
-<Columna>1055</Columna>
+<Columna>1057</Columna>
 </Token>
 <Token>
 <Nombre>PUNTOS</Nombre>
 <Valor>:</Valor>
 <Fila>28</Fila>
-<Columna>1059</Columna>
+<Columna>1061</Columna>
 </Token>
 <Token>
 <Nombre>ID_CONJ</Nombre>
 <Valor> conjnum </Valor>
 <Fila>28</Fila>
-<Columna>1070</Columna>
+<Columna>1072</Columna>
 </Token>
 <Token>
 <Nombre>CONTENIDO_CONJ</Nombre>
 <Valor>2~6</Valor>
 <Fila>28</Fila>
-<Columna>1075</Columna>
+<Columna>1077</Columna>
 </Token>
 <TokenError>
 
