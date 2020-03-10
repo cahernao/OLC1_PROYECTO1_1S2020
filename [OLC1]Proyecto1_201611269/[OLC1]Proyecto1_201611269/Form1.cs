@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using _OLC1_Proyecto1_201611269.ANALISIS;
+using _OLC1_Proyecto1_201611269.OBJETOS;
 
 namespace _OLC1_Proyecto1_201611269
 {
@@ -16,6 +18,7 @@ namespace _OLC1_Proyecto1_201611269
         ImageList imgl;
         int contador = 0, maximo=0;
         ANALISIS.analizador1 miAna;
+        analizador2 miAna2;
         public Form1()
         {
             imgl = new ImageList();
@@ -47,7 +50,9 @@ namespace _OLC1_Proyecto1_201611269
 
             miAna.analizame(txt_Principal.Text);
             txt_Consola.Clear();
-            txt_Consola.Text = miAna.dameTokens();
+            //txt_Consola.Text = miAna.dameTokens();
+            miAna2 = new analizador2(miAna.miListaToken);
+            txt_Consola.Text = miAna2.imprime();
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
