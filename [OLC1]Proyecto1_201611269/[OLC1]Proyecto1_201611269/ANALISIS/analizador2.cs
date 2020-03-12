@@ -82,19 +82,19 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
         public string imprime()
         {
             string c="";
-            c += "-------------CONJUNTOS--------------\n\n" + System.Environment.NewLine;
+            c += "-------------------CONJUNTOS--------------\n\n" + System.Environment.NewLine;
             foreach (conjunto cn in listaConj)
             {
                 c += cn.nombre + "  ->   " + cn.contenido + System.Environment.NewLine;
             }
 
-            c += "-------------ER--------------\n\n" + System.Environment.NewLine;
+            c += "-----------------------ER--------------\n\n" + System.Environment.NewLine;
 
             foreach (expresionRegular cn in listaER)
             {
-                c += cn.nombre + "  ->   " + cn.contenido + System.Environment.NewLine;
+                c += cn.nombre + "  ->   " + cn.contenido2 + System.Environment.NewLine;
             }
-            c += "-------------LEXEMAS--------------\n\n" + System.Environment.NewLine;
+            c += "------------------LEXEMAS--------------\n\n" + System.Environment.NewLine;
 
             foreach (lexema cn in listaLexema)
             {
