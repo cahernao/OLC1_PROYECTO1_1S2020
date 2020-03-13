@@ -18,7 +18,7 @@ namespace _OLC1_Proyecto1_201611269.OBJETOS
             nombre = n.Replace(" ", "");
             contenido = c;
             listaElementos = new List<string>();
-            AgregarINFO(contenido);
+            AgregarINFO(contenido); 
         }
 
         public void AgregarINFO(string a){

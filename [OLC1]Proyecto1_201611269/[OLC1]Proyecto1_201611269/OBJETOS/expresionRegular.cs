@@ -11,6 +11,7 @@ namespace _OLC1_Proyecto1_201611269.OBJETOS
         public string nombre;
         public string contenido;
         public string contenido2;
+        public Thompson miTh;
 
         public expresionRegular(string no, string con)
         {
@@ -30,8 +31,8 @@ namespace _OLC1_Proyecto1_201611269.OBJETOS
                         contenido=contenido.Replace("{"+cn.nombre+"}", contendioCN);
                     }
             }
+            miTh = new Thompson(nombre, contenido);
 
-            
         }
     }
 }
