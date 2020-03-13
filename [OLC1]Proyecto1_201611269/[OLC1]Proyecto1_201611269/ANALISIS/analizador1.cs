@@ -253,7 +253,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
                                         //UN PUNTO Y COMA
                                         if(actual==';'){
                                             //TOOOKEN
-                                            miListaToken.Add(new token("CONTENIDO_PATRON",quitatodoDos(cadenaTemporal1), fila, columna));
+                                            miListaToken.Add(new token("CONTENIDO_PATRON",quitatodoTres(cadenaTemporal1), fila, columna));
                                             cadenaTemporal1="";
                                             estadoPatron=0;
                                         }
@@ -436,6 +436,13 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
             string cad = cadena;
             return cad.Replace(">", "").Replace("-", "").Replace(":", "")
                 .Replace("\"", "").Replace(";", "");
+        }
+
+        private string quitatodoTres(string cadena)
+        {
+            string cad = cadena;
+            return cad.Replace(">", "").Replace("-", "").Replace(":", "")
+                .Replace(";", "");
         }
 
 

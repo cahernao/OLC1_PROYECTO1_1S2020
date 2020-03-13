@@ -131,14 +131,14 @@
             // analizarToolStripMenuItem
             // 
             this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
-            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.analizarToolStripMenuItem.Text = "Analizar";
             this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
             // 
             // generarXMLToolStripMenuItem
             // 
             this.generarXMLToolStripMenuItem.Name = "generarXMLToolStripMenuItem";
-            this.generarXMLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.generarXMLToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.generarXMLToolStripMenuItem.Text = "Generar XML";
             this.generarXMLToolStripMenuItem.Click += new System.EventHandler(this.generarXMLToolStripMenuItem_Click);
             // 
@@ -199,7 +199,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
+            this.pictureBox1.InitialImage = null;
             this.pictureBox1.Location = new System.Drawing.Point(9, 35);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(722, 428);

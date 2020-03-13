@@ -92,7 +92,7 @@ namespace _OLC1_Proyecto1_201611269.ANALISIS
 
             foreach (expresionRegular cn in listaER)
             {
-                c += cn.nombre + "  ->   " + cn.contenido2 + System.Environment.NewLine;
+                c += cn.nombre + "  ->   " + cn.contenido + System.Environment.NewLine;
             }
             c += "------------------LEXEMAS--------------\n\n" + System.Environment.NewLine;
 

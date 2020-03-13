@@ -16,7 +16,7 @@ namespace _OLC1_Proyecto1_201611269
     public partial class Form1 : Form
     {
         ImageList imgl;
-        int contador = 0, maximo=0;
+        int contador = 0, maximo = 0;
         ANALISIS.analizador1 miAna;
         analizador2 miAna2;
         public Form1()
@@ -29,7 +29,7 @@ namespace _OLC1_Proyecto1_201611269
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             //manualtecnico.pdf
-            
+
         }
 
         private void manualUsuarioToolStripMenuItem_Click(object sender, EventArgs e)
@@ -52,12 +52,18 @@ namespace _OLC1_Proyecto1_201611269
             txt_Consola.Clear();
             //txt_Consola.Text = miAna.dameTokens();
             miAna2 = new analizador2(miAna.miListaToken);
-            txt_Consola.Text = miAna2.imprime();
+            //txt_Consola.Text = miAna2.imprime();
+            string tmp = "";
+            foreach (expresionRegular er in miAna2.listaER)
+            {
+                tmp += er.miTh.dameResultadoPilas()+System.Environment.NewLine;
+            }
+            txt_Consola.Text = tmp;
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            
+
         }
 
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -94,26 +100,14 @@ namespace _OLC1_Proyecto1_201611269
         {
             try
             {
-                imgl.ImageSize = new Size(256, 256);
-                /*string direccion = System.Reflection.Assembly.GetEntryAssembly().Location.ToString().Replace("[OLC1]Proyecto1_201611269.exe", "");
-                //MessageBox.Show(direccion);
-
-                string[] array2 = Directory.GetFiles(direccion, "*.png");
-
-                foreach(string dir in array2){
-                    imgl.Images.Add(Image.FromFile(dir));
-                }
-
-                pictureBox1.Image = imgl.Images[contador];*/
-
-
-
                 
+                imgl.ImageSize = new Size(256, 256);
                 imgl.Images.Clear();
-                DirectoryInfo directory = new DirectoryInfo(System.Reflection.Assembly.GetEntryAssembly().Location.ToString().Replace("[OLC1]Proyecto1_201611269.exe", ""));
+                string pp = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\";
+                DirectoryInfo directory = new DirectoryInfo(pp);
                 FileInfo[] Archives = directory.GetFiles("*.png");
                 //Now, for each archive in the folder it will add to imagelist
-
+                maximo = 0;
                 foreach (FileInfo fileinfo in Archives)
                 {
                     maximo++;
@@ -121,7 +115,8 @@ namespace _OLC1_Proyecto1_201611269
                 }
 
                 pictureBox1.Image = imgl.Images[contador];
-                
+                toolTip1.Tag = pictureBox1.ImageLocation;
+
             }
             catch (Exception ex)
             {
@@ -132,16 +127,32 @@ namespace _OLC1_Proyecto1_201611269
 
         private void AFD_btnAnterior_Click(object sender, EventArgs e)
         {
-            if (contador > 0 && maximo != 0) { contador--; pictureBox1.Image = imgl.Images[contador]; }
-            
+            try
+            {
+                if (contador > 0 && maximo != 0) { contador--; pictureBox1.Image = imgl.Images[contador]; }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
             //txtDireccionImagen.Text = pictureBox1.ImageLocation;
         }
 
         private void AFD_btnSiguiente_Click(object sender, EventArgs e)
         {
-            if (contador < maximo - 1 && maximo != 0) { contador++; pictureBox1.Image = imgl.Images[contador]; }
-            
-            
+            try
+            {
+                if (contador < maximo - 1 && maximo != 0) { contador++; pictureBox1.Image = imgl.Images[contador]; }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
         }
 
         private void txtDireccionImagen_Click(object sender, EventArgs e)
@@ -175,7 +186,7 @@ namespace _OLC1_Proyecto1_201611269
         {
             //AQUI SE GENERA EL XML EN NUESTRO CASO VAMOS A HACER UNA PRUEBA
 
-            
+
             //miAna.analizame(txt_Principal.Text);
             miAna.GeneraReporteTokens();
         }
